@@ -16,7 +16,7 @@ not having curl or wget, etc. etc.)
 Upon Installation You will have the option to create a config.json file. If you do not create the json file, you can always create it later
 with this command (make sure you are in the directory of the project):
 ```sh
-curl -O "https://raw.githubusercontent.com/derpferpmerp/HangMan-Attempt-2021/master/config.json"||wget -o config.json "https://raw.githubusercontent.com/derpferpmerp/HangMan-Attempt-2021/master/config.json"||touch config.json;echo "There Was An Error, Please Look at the Github to Manually Create the Json File"
+curl -O "https://raw.githubusercontent.com/derpferpmerp/HangMan-Attempt-2021/master/config.json"||touch config.json;echo "There Was An Error, Please Look at the Github to Manually Create the Json File"
 ```
 If the command fails, it will automatically create the file and print an error. If so, and also for potential bugfixing, The Config.Json should have this structure:
 ```json
