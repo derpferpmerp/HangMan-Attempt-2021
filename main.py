@@ -1,9 +1,10 @@
+import inquirer
 global CONFIG,data,alphabet
 alphabet=['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
 def ask(name,p,cL,s):
 	if s=="True":
-		setup = [__import__("inquirer").List(name,message=p,choices=cL),]
-		response = __import__("inquirer").prompt(setup)
+		setup = [inquirer.List(name,message=p,choices=cL),]
+		response = inquirer.prompt(setup)
 		return response["letter"]
 	else:
 		return input(p+": ")
