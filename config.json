@@ -1,7 +1,8 @@
 {
 	"URL": "https://api.npoint.io/3e986e81d537efcb2863",
-	"LIMIT": "",
+	"LIMIT": "5",
+	"MIN": "0",
 	"DEV": "True",
 	"FANCY": "False",
-	"SCRABBLE-LIMIT": "2"
+	"SCRABBLE-LIMIT": ""
 }

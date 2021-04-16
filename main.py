@@ -1,5 +1,6 @@
 import inquirer
 global CONFIG,data,alphabet
+
 alphabet=['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
 def ask(name,p,cL,s):
 	if s=="True":
@@ -32,7 +33,6 @@ def scrabble(wordlist):
 		lettervalues=[scrabbledict[x] for x in list([wrd[c] for c in [i for i in range(len(wrd))]]) if x in scrabbledict.keys()]
 		for points in lettervalues:totalval+=int(points)
 		if totalval<=lim:lst.append(wrd)
-	print(lst[0:10])
 	return lst
 
 
@@ -47,7 +47,8 @@ with (__import__('urllib.request',fromlist=['request']).urlopen(str(url))) as re
 
 # Generate List of Words That Are Less than Length "LIMIT" in CONFIG
 def wordlistgen(lst):
-	return(list([x for x in list([lst[c] for c in [i for i in range(len(lst)) if len(lst[i])<=[1000 if CONFIG["LIMIT"] not in range(100) else CONFIG["LIMIT"]][0]]]) if len(x)>=2]))
+	return(list([x for x in list([lst[c] for c in [i for i in range(len(lst)) if len(lst[i])<=[1000 if CONFIG["LIMIT"] not in range(100) else CONFIG["LIMIT"]][0]]]) if len(x)>=[int(CONFIG["MIN"]) if (CONFIG["MIN"]!="") else 0][0]]))
+
 
 
 
@@ -110,6 +111,9 @@ def returnInstances(d,ltr):
 
 
 
+def bold(txt):return f"\033[1m{txt}\033[0m"
+
+
 
 # Main Function. Generates An Underscore for every single space, then replaces the underscores with the previous played letters (stored in ltrlist), however will only do so if the letter is not already played. It will then determine if the letter is incorrect, and will subtract a life from the player if that's the case. Then It will return the "din" directory (The Correct Inputs), the "dout" directory (The Inputs You have Submitted), the list "ltrlist" (A list of letters you have played) and the number "lives" (the number of lives you have left.)
 def generateSpaces(din,dout,ltr,ltrlist,lives,charlist):
@@ -142,19 +146,10 @@ def combine(lst):return " ".join([str(x) for x in lst])
 
 
 def getdefinition(wrd):
-	url=f"http://www.mso.anu.edu.au/~ralph/OPTED/v003/wb1913_{wrd[0].lower()}.html"
-	r = __import__("requests").get(url)
-	page_source = r.text
-	page_source = page_source.split('\n')
-	for possible in page_source:
-		if f"<P><B>{wrd.lower()[0].upper()}{wrd.lower()[1:len(wrd)]}</B>" in possible:definition=possible
-	if definition is None:return("(No Valid Definition Found)")
-	definition=definition.replace('<P><B>','')
-	definition=definition.replace('</B> ',' ')
-	definition=definition.replace('(<I>n.</I>) ','(Noun): ')
-	definition=definition.replace('(<I>n. pl.</I>) ','(Plural Noun): ')
-	definition=definition.replace('</P>','')
-	return definition
+	definitionlist=[]
+	[definitionlist.append(possible) for possible in (__import__("requests").get(f"http://www.mso.anu.edu.au/~ralph/OPTED/v003/wb1913_{wrd[0].lower()}.html").text).split('\n') if f"<P><B>{wrd.lower()[0].upper()}{wrd.lower()[1:len(wrd)]}</B>" in possible]
+	if len(definitionlist)==0:return("(No Valid Definition Found)")
+	else:return f"\n{bold(((((definitionlist[0].replace('<P><B>','')).replace('</B> ',' ')).replace('<I>','')).replace('</I>','')).replace('</P>','').split(')')[0])}{bold(')')}{((((definitionlist[0].replace('<P><B>','')).replace('</B> ',' ')).replace('<I>','')).replace('</I>','')).replace('</P>','').split(')')[1]}"
 
 
 
@@ -174,7 +169,7 @@ def guessLetter():
 			break
 		elif d_out==d_in:
 			print("You Won!")
-			print(getdefinition("eon"))
+			print(getdefinition(word))
 			break
 
 guessLetter()
