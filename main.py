@@ -14,14 +14,26 @@ def ask(name,p,cL,s):
 if __import__("os").path.isfile('config.json'):
 	with open('config.json') as f:CONFIG=__import__("json").load(f)
 	if type(CONFIG)==type({}):
-		print("|--> CONFIG FILE INVALID - SWITCHING TO DEFAULT <--|") if len(list([x for x in ["FANCY","LIMIT","DEV"] if x not in CONFIG.keys()])) else print("Using Configuration File \"config.json\"")
+		print("|--> CONFIG FILE INVALID - SWITCHING TO DEFAULT <--|") if len(list([x for x in ["FANCY","LIMIT","DEV","SCRABBLE-LIMIT"] if x not in CONFIG.keys()])) else print("Using Configuration File \"config.json\"")
 		if "URL" not in CONFIG.keys():CONFIG["URL"]=""
-else:CONFIG={"URL":"https://api.npoint.io/3e986e81d537efcb2863","LIMIT":"","DEV":"False","FANCY":"False"}
+else:CONFIG={"URL":"https://api.npoint.io/3e986e81d537efcb2863","LIMIT":"","DEV":"False","FANCY":"False","SCRABBLE-LIMIT":""}
 
 def urlget(p):return str(input(str(p)))
 url = CONFIG["URL"] if CONFIG["URL"]!="" else urlget("URL: ")
 if(url==CONFIG["URL"]):print(f"URL: {url}")
 
+
+def scrabble(wordlist):
+	scrabbledict={"a":1,"b":3,"c":3,"d":2,"e":1,"f":4,"g":2,"h":4,"i":1,"j":8,"k":5,"l":1,"m":3,"n":1,"o":1,"p":3,"q":10,"r":1,"s":1,"t":1,"u":1,"v":4,"w":4,"x":8,"y":4,"z":10}
+	lst=[]
+	lim=1000 if CONFIG["SCRABBLE-LIMIT"]=="" else int(CONFIG["SCRABBLE-LIMIT"])
+	for wrd in wordlist:
+		totalval=0
+		lettervalues=[scrabbledict[x] for x in list([wrd[c] for c in [i for i in range(len(wrd))]]) if x in scrabbledict.keys()]
+		for points in lettervalues:totalval+=int(points)
+		if totalval<=lim:lst.append(wrd)
+	print(lst[0:10])
+	return lst
 
 
 
@@ -35,7 +47,7 @@ with (__import__('urllib.request',fromlist=['request']).urlopen(str(url))) as re
 
 # Generate List of Words That Are Less than Length "LIMIT" in CONFIG
 def wordlistgen(lst):
-	return(list([lst[c] for c in [i for i in range(len(lst)) if len(lst[i])<=[1000 if CONFIG["LIMIT"] not in range(100) else CONFIG["LIMIT"]][0]]]))
+	return(list([x for x in list([lst[c] for c in [i for i in range(len(lst)) if len(lst[i])<=[1000 if CONFIG["LIMIT"] not in range(100) else CONFIG["LIMIT"]][0]]]) if len(x)>=2]))
 
 
 
@@ -52,6 +64,7 @@ def wordgen(lst):
 # Store Random Word
 wordlist=wordlistgen(list(data["words"]))
 global word
+wordlist=scrabble(wordlist)
 word=wordgen(wordlist)
 
 
@@ -128,6 +141,23 @@ def combine(lst):return " ".join([str(x) for x in lst])
 
 
 
+def getdefinition(wrd):
+	url=f"http://www.mso.anu.edu.au/~ralph/OPTED/v003/wb1913_{wrd[0].lower()}.html"
+	r = __import__("requests").get(url)
+	page_source = r.text
+	page_source = page_source.split('\n')
+	for possible in page_source:
+		if f"<P><B>{wrd.lower()[0].upper()}{wrd.lower()[1:len(wrd)]}</B>" in possible:definition=possible
+	if definition is None:return("(No Valid Definition Found)")
+	definition=definition.replace('<P><B>','')
+	definition=definition.replace('</B> ',' ')
+	definition=definition.replace('(<I>n.</I>) ','(Noun): ')
+	definition=definition.replace('(<I>n. pl.</I>) ','(Plural Noun): ')
+	definition=definition.replace('</P>','')
+	return definition
+
+
+
 
 # The function that loops over itself until the user is either out of lives or has completed the word.
 def guessLetter():
@@ -144,6 +174,7 @@ def guessLetter():
 			break
 		elif d_out==d_in:
 			print("You Won!")
+			print(getdefinition("eon"))
 			break
 
 guessLetter()
