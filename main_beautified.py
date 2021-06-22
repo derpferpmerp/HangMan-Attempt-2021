@@ -199,10 +199,9 @@ def generateSpaces(din, dout, ltr, ltrlist, lives, charlist):
     else:
         print("Letter Already Submitted")
     print(f"WORD: {combine(dout.values())}")
+    print(f"Charlist: {charlist}")
     if ltrlist != []:
-        for x in range(len(ltrlist)):
-            if ltrlist[x] in charlist:
-                del charlist[charlist.index(ltrlist[x])]
+        charlist = list([gg for gg in parseLetters(charlist) if gg not in ltrlist])
     return [dout, din, ltrlist, lives, charlist]
 
 
@@ -239,7 +238,7 @@ def guessLetter():
         9,
         alphabet,
     )
-    print(f"Lives Left: {lives}")
+    print(f"Lives Left: {bold(lives)}")
 
     while ONGOING == True:
         d_out, d_in, ltrlist, lives, charlist = generateSpaces(
@@ -250,7 +249,7 @@ def guessLetter():
             lives,
             charlist,
         )
-        print(f"Lives Left: {lives}")
+        print(f"Lives Left: {bold(lives)}")
         if lives <= 0:
             print("You Lost!!")
             break
