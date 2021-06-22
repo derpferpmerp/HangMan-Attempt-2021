@@ -77,10 +77,10 @@ def urlget(p):
     return str(input(str(p)))
 
 if CONFIG["URL"] == "":
-	url = urlget("URL: ")
+    url = urlget("URL: ")
 else:
-	url = CONFIG["URL"]
-	print(f"URL: {url}")
+    url = CONFIG["URL"]
+    print(f"URL: {url}")
 
 
 def scrabble(wordlist):
@@ -113,17 +113,17 @@ def scrabble(wordlist):
         "z": 10,
     }
     lst = []
-				if CONFIG["SCRABBLE-LIMIT"] == "":
-					lim = 1000
-				else:
-					lim = int(CONFIG["SCRABBLE-LIMIT"])
+    if CONFIG["SCRABBLE-LIMIT"] == "":
+        lim = 1000
+    else:
+	lim = int(CONFIG["SCRABBLE-LIMIT"])
     
     for wrd in wordlist:
         totalval = 0
-								lettervalues = []
-								for x in [wrd[c] for c in [i for i in range(len(wrd))]]:
-									if x in scrabbledict.keys():
-										lettervalues.append(scrabbledict[x])
+	lettervalues = []
+	for x in [wrd[c] for c in [i for i in range(len(wrd))]]:
+	    if x in scrabbledict.keys():
+	        lettervalues.append(scrabbledict[x])
 										
         for points in lettervalues:
             totalval += int(points)
