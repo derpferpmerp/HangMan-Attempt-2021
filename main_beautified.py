@@ -4,41 +4,15 @@ import os
 import urllib.request as uget
 import random
 import requests
+import string
 
 global CONFIG
 global data
 global alphabet
 global word
 
-alphabet = [
-    "a",
-    "b",
-    "c",
-    "d",
-    "e",
-    "f",
-    "g",
-    "h",
-    "i",
-    "j",
-    "k",
-    "l",
-    "m",
-    "n",
-    "o",
-    "p",
-    "q",
-    "r",
-    "s",
-    "t",
-    "u",
-    "v",
-    "w",
-    "x",
-    "y",
-    "z",
-]
-
+# alphabet = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
+alphabet = string.ascii_lowercase
 
 def ask(name, p, cL, s):
     if s == "True":
@@ -51,7 +25,10 @@ def ask(name, p, cL, s):
         return input(p + ": ")
 
 
-# The CONFIG variable is where the configuration is hosted. The Variable "URL" is for the predefined json word URL, the "LIMIT" variable is a custom play controlled feature that cuts out words longer than the value ("":No Limit,Real Limit can go up to 100), the feature DEV is used to display information about the game's internal values which was used during bugtesting.
+# The CONFIG variable is where the configuration is hosted. 
+# The Variable "URL" is for the predefined json word URL,
+# the "LIMIT" variable is a custom play controlled feature that cuts out words longer than the value ("":No Limit,Real Limit can go up to 100), 
+# the feature DEV is used to display information about the game's internal values which was used during bugtesting.
 
 if os.path.isfile("config.json"):
     with open("config.json") as f:
@@ -116,15 +93,14 @@ def scrabble(wordlist):
     if CONFIG["SCRABBLE-LIMIT"] == "":
         lim = 1000
     else:
-	lim = int(CONFIG["SCRABBLE-LIMIT"])
+        lim = int(CONFIG["SCRABBLE-LIMIT"])
     
     for wrd in wordlist:
         totalval = 0
-	lettervalues = []
-	for x in [wrd[c] for c in [i for i in range(len(wrd))]]:
-	    if x in scrabbledict.keys():
-	        lettervalues.append(scrabbledict[x])
-										
+        lettervalues = []
+        for x in [wrd[c] for c in [i for i in range(len(wrd))]]:
+            if x in scrabbledict.keys():
+                lettervalues.append(scrabbledict[x])							
         for points in lettervalues:
             totalval += int(points)
         if totalval <= lim:
